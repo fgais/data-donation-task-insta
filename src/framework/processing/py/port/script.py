@@ -3,9 +3,13 @@ from port.api.commands import (CommandSystemDonate, CommandUIRender, CommandSyst
 
 import pandas as pd
 import zipfile
+import json
+
+import port.extraction as extraction
+
 
 def process(session_id: str):
-    platform = "Platform of interest"
+    platform = "TikTok"
 
     # Start of the data donation flow
     while True:
@@ -27,8 +31,43 @@ def process(session_id: str):
                 # Extract the data you as a researcher are interested in, and put it in a pandas DataFrame
                 # Show this data to the participant in a table on screen
                 # The participant can now decide to donate
-                extracted_data = extract_the_data_you_are_interested_in(file_prompt_result.value)
-                consent_prompt = generate_consent_prompt(extracted_data)
+                extracted_favorites = extraction.extract_favorites(file_prompt_result.value)
+                extracted_follower = extraction.extract_follower(file_prompt_result.value)
+                extracted_following = extraction.extract_following(file_prompt_result.value)
+                hashtags_used = extraction.extract_used_hashtags(file_prompt_result.value)
+                login_history = extraction.extract_login_history(file_prompt_result.value)
+                recent_location = extraction.extract_recent_location(file_prompt_result.value)
+                extracted_blocks = extraction.extract_blocklist(file_prompt_result.value)
+                extracted_app_settings = extraction.extract_app_settings(file_prompt_result.value)
+                extracted_videos_posted = extraction.extract_posted_videos(file_prompt_result.value)
+                extracted_views = extraction.extract_watchlist(file_prompt_result.value)
+                extracted_shares = extraction.extract_shares(file_prompt_result.value)
+                extracted_likes = extraction.extract_likes(file_prompt_result.value)
+                extracted_search = extraction.extract_search(file_prompt_result.value)
+                extracted_adinfo = extraction.extract_ads_info(file_prompt_result.value)
+
+                extracted_watch_live = extraction.extract_watch_live(file_prompt_result.value)
+                extracted_comments = extraction.extract_comments(file_prompt_result.value)
+                extracted_wl_comments = extraction.extract_watch_live_comments(file_prompt_result.value)
+
+                consent_prompt = generate_consent_prompt(extracted_favorites,
+                                                         extracted_follower,
+                                                         extracted_following,
+                                                         hashtags_used,
+                                                         login_history,
+                                                         recent_location,
+                                                         extracted_blocks,
+                                                         extracted_app_settings,
+                                                         extracted_videos_posted,
+                                                         extracted_views, 
+                                                         extracted_shares, 
+                                                         extracted_likes, 
+                                                         extracted_search,
+                                                         extracted_adinfo, 
+                                                         extracted_comments,
+                                                         extracted_watch_live,
+                                                         extracted_wl_comments)
+                
                 consent_prompt_result = yield render_page(platform, consent_prompt)
 
                 # If the participant wants to donate the data gets donated
@@ -58,7 +97,7 @@ def process(session_id: str):
     yield render_end_page()
 
 
-def extract_the_data_you_are_interested_in(zip_file: str) -> pd.DataFrame:
+'''def extract_the_data_you_are_interested_in(zip_file: str) -> pd.DataFrame:
     """
     This function extracts the data the researcher is interested in
 
@@ -73,17 +112,43 @@ def extract_the_data_you_are_interested_in(zip_file: str) -> pd.DataFrame:
 
     try:
         file = zipfile.ZipFile(zip_file)
-        data = []
-        for name in file.namelist():
-            info = file.getinfo(name)
-            data.append((name, info.compress_size, info.file_size))
 
-        out = pd.DataFrame(data, columns=["File name", "Compressed file size", "File size"])
+        watch_data = []
+        share_data = []
+        like_data = []
+
+        for name in file.namelist():
+            with file.open(name) as f:
+                temp_file = f.read()  
+                json_file = json.loads(temp_file)
+                
+                # watch history
+                watch_history = json_file["Activity"]["Video Browsing History"]["VideoList"]
+
+                for entry in watch_history:
+                    watch_data.append(("watch",entry["Date"], entry["Link"]))
+
+                # share history
+                share_history = json_file["Activity"]["Share History"]["ShareHistoryList"]
+
+                for entry in share_history:
+                    share_data.append(("share",entry["Date"],entry["Link"],entry["SharedContent"], entry["Method"]))
+
+                # like history
+                like_history = json_file["Activity"]["Like List"]["ItemFavoriteList"]
+
+                for entry in like_history:
+                    like_data.append(("like",entry["Date"],entry["Link"]))
+
+
+        watch_df = pd.DataFrame(watch_data, columns=["type","timestamp","link"])
+        share_df = pd.DataFrame(share_data, columns=["type","timestamp","link","shared_content","method"])
+        like_df = pd.DataFrame(like_data, columns=["type","timestamp","link"])
 
     except Exception as e:
         print(f"Something went wrong: {e}")
 
-    return out
+    return watch_df'''
 
 
 def validate_the_participants_input(zip_file: str) -> bool:
@@ -146,6 +211,8 @@ def generate_file_prompt(platform, extensions) -> props.PropsUIPromptFileInput:
     return props.PropsUIPromptFileInput(description, extensions)
 
 
+
+
 def generate_consent_prompt(*args: pd.DataFrame) -> props.PropsUIPromptConsentForm:
     description = props.Translatable({
        "en": "Below you will find meta data about the contents of the zip file you submitted. Please review the data carefully and remove any information you do not wish to share. If you would like to share this data, click on the 'Yes, share for research' button at the bottom of this page. By sharing this data, you contribute to research <insert short explanation about your research here>.",
@@ -163,9 +230,30 @@ def generate_consent_prompt(*args: pd.DataFrame) -> props.PropsUIPromptConsentFo
     })
 
     tables = [] 
+    outputnames = ["favorite videos, effects, hashtags, and sounds",
+                   "Your fans.",
+                   "Whom you follow",
+                   "Hashtags you used",
+                   "Login History",
+                   "Most recent location",
+                   "Blocked accounts",
+                   "App Settings",
+                   "videos posted",
+                   "views", 
+                   "shares", 
+                   "likes", 
+                   "searches", 
+                   "adinfo", 
+                   "watch live", 
+                   "comments", 
+                   "live comments"]
     for index, df in enumerate(args):
+        print("Test Print ------------")
+        print(index)
+        print(outputnames, outputnames[index])
         table_title = props.Translatable({
-            "en": f"The contents of your zipfile contents (Table {index + 1}/{len(args)})",
+            "en": f"{outputnames[index]}",
+            #"en": f"Your Data Donations content (Table {index + 1}/{len(args)})",
             "nl": "De inhoud van uw zip bestand"
         })
         tables.append(props.PropsUIPromptConsentFormTable(f"zip_contents_{index}", table_title, df))
