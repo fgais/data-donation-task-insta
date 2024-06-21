@@ -151,32 +151,3 @@ def extract_saved_posts(zip_file: str) -> pd.DataFrame:
 
     return df
 
-
-
-#### example
-def extract_follower(zip_file: str) -> pd.DataFrame:
-    """
-    extracts the list of users that follow the doner
-    """
-    df = pd.DataFrame()
-
-    try:
-        file = zipfile.ZipFile(zip_file)
-
-        data = []
-        for name in file.namelist():
-            with file.open(name) as f:
-                temp_file = f.read()  
-                json_file = json.loads(temp_file)
-                
-                follower_list = json_file["Activity"]["Follower List"]["FansList"]
-
-                for entry in follower_list:
-                    data.append(("followedby",entry["Date"], entry["UserName"]))
-
-        df = pd.DataFrame(data, columns=["type","timestamp","link"])
-
-    except Exception as e:
-        print(f"Something went wrong: {e}")
-
-    return df

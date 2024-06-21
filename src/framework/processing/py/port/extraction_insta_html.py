@@ -151,3 +151,17 @@ def extract_account_setting_html(zip_file: str) -> pd.DataFrame:
         print(f"Something went wrong: {e}")   
     return df
 
+def extract_account_location_html(zip_file: str) -> pd.DataFrame:
+    try:
+        file = zipfile.ZipFile(zip_file)
+        data = []
+        with file.open('personal_information/information_about_you/account_based_in.html') as f:
+            soup = BeautifulSoup(f, 'html.parser')
+            infos = soup.find_all('td', class_="_2pin _a6_q")
+            location = infos[0].find('div').text
+            data.append(('account_based_in', location))
+            df = pd.DataFrame(data, columns = ['type', 'value'])
+    except Exception as e:
+        print(f"Something went wrong: {e}")   
+    return df
+
