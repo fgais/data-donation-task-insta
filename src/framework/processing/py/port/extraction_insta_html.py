@@ -165,3 +165,25 @@ def extract_account_location_html(zip_file: str) -> pd.DataFrame:
         print(f"Something went wrong: {e}")   
     return df
 
+def extract_posts_seen_html(zip_file: str) -> pd.DataFrame:
+    '''
+    extracts posts seen by donor (data only covers last 2 weeks?)
+    '''
+    try:
+        file = zipfile.ZipFile(zip_file)
+        data = []
+        with file.open('ads_information/ads_and_topics/posts_viewed.html') as f:
+            soup = BeautifulSoup(f, 'html.parser')
+            posts = soup.find_all('div', class_="pam _3-95 _2ph- _a6-g uiBoxWhite noborder")
+            for post in posts:
+                time = post.find('td', class_='_2pin _2piu _a6_r').text.replace('\u202f','')
+                user_name = post.find_all('div')[1].text
+                data.append(('post_seen',time,user_name))
+
+        df = pd.DataFrame(data, columns = ['type', 'timestamp', 'from_user'])
+        
+    except Exception as e:
+        print(f"Something went wrong: {e}")   
+    return df
+
+    
