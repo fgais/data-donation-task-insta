@@ -5,11 +5,12 @@ import pandas as pd
 import zipfile
 import json
 
-import port.extraction as extraction
+import port.extraction_insta_html as extraction_insta_html
 
 
 def process(session_id: str):
-    platform = "TikTok"
+    #platform = "TikTok"
+    platform = "Instagram"
 
     # Start of the data donation flow
     while True:
@@ -31,42 +32,73 @@ def process(session_id: str):
                 # Extract the data you as a researcher are interested in, and put it in a pandas DataFrame
                 # Show this data to the participant in a table on screen
                 # The participant can now decide to donate
-                extracted_favorites = extraction.extract_favorites(file_prompt_result.value)
-                extracted_follower = extraction.extract_follower(file_prompt_result.value)
-                extracted_following = extraction.extract_following(file_prompt_result.value)
-                hashtags_used = extraction.extract_used_hashtags(file_prompt_result.value)
-                login_history = extraction.extract_login_history(file_prompt_result.value)
-                recent_location = extraction.extract_recent_location(file_prompt_result.value)
-                extracted_blocks = extraction.extract_blocklist(file_prompt_result.value)
-                extracted_app_settings = extraction.extract_app_settings(file_prompt_result.value)
-                extracted_videos_posted = extraction.extract_posted_videos(file_prompt_result.value)
-                extracted_views = extraction.extract_watchlist(file_prompt_result.value)
-                extracted_shares = extraction.extract_shares(file_prompt_result.value)
-                extracted_likes = extraction.extract_likes(file_prompt_result.value)
-                extracted_search = extraction.extract_search(file_prompt_result.value)
-                extracted_adinfo = extraction.extract_ads_info(file_prompt_result.value)
+                extracted_ads_viewed = extraction_insta_html.extract_ads_viewed_html(file_prompt_result.value)
+                extracted_posts_viewed = extraction_insta_html.extract_posts_viewed_html(file_prompt_result.value)
+                extracted_ads_clicked = extraction_insta_html.extract_ads_clicked_html(file_prompt_result.value)
+                extracted_suggested_accs_viewed = extraction_insta_html.extract_suggested_acc_viewed_html(file_prompt_result.value)
+                extracted_videos_watched = extraction_insta_html.extract_videos_watched_html(file_prompt_result.value)
+                extracted_advertisers_using_info = extraction_insta_html.extract_advertisers_using_info_html(file_prompt_result.value)
+                extracted_no_ads = extraction_insta_html.extract_ads_setting_html(file_prompt_result.value)
+                extracted_off_meta_activity = extraction_insta_html.extract_off_meta_activity_html(file_prompt_result.value)
+                extracted_followers = extraction_insta_html.extract_followers_html(file_prompt_result.value)
+                extracted_following = extraction_insta_html.extract_following_html(file_prompt_result.value)
+                extracted_acc_searches = extraction_insta_html.extract_account_searches_html(file_prompt_result.value)
+                extracted_phrase_searches = extraction_insta_html.extract_word_or_phrase_searches_html(file_prompt_result.value)
+                extracted_devices = extraction_insta_html.extract_used_devices_html(file_prompt_result.value)
+                extracted_location = extraction_insta_html.extract_account_location_html(file_prompt_result.value)
+                extracted_topics = extraction_insta_html.extract_your_topics_html(file_prompt_result.value)
+                extracted_logins = extraction_insta_html.extract_login_activity_html(file_prompt_result.value)
+                extracted_post_comments = extraction_insta_html.extract_post_comments_html(file_prompt_result.value)
+                extracted_reels_comments = extraction_insta_html.extract_reel_comments_html(file_prompt_result.value)
+                #extracted_insta_live ??
+                extracted_liked_posts = extraction_insta_html.extract_likes_html(file_prompt_result.value)
+                extracted_acc_setting = extraction_insta_html.extract_account_setting_html(file_prompt_result.value)
+                extracted_links_in_dms = extraction_insta_html.extract_links_shared_in_dms_html(file_prompt_result.value)
+                extracted_saved_posts = extraction_insta_html.extract_saved_posts_html(file_prompt_result.value)
 
-                extracted_watch_live = extraction.extract_watch_live(file_prompt_result.value)
-                extracted_comments = extraction.extract_comments(file_prompt_result.value)
-                extracted_wl_comments = extraction.extract_watch_live_comments(file_prompt_result.value)
 
-                consent_prompt = generate_consent_prompt(extracted_favorites,
-                                                         extracted_follower,
-                                                         extracted_following,
-                                                         hashtags_used,
-                                                         login_history,
-                                                         recent_location,
-                                                         extracted_blocks,
-                                                         extracted_app_settings,
-                                                         extracted_videos_posted,
-                                                         extracted_views, 
-                                                         extracted_shares, 
-                                                         extracted_likes, 
-                                                         extracted_search,
-                                                         extracted_adinfo, 
-                                                         extracted_comments,
-                                                         extracted_watch_live,
-                                                         extracted_wl_comments)
+
+                # extracted_favorites = extraction.extract_favorites(file_prompt_result.value)
+                # extracted_follower = extraction.extract_follower(file_prompt_result.value)
+                # extracted_following = extraction.extract_following(file_prompt_result.value)
+                # hashtags_used = extraction.extract_used_hashtags(file_prompt_result.value)
+                # login_history = extraction.extract_login_history(file_prompt_result.value)
+                # recent_location = extraction.extract_recent_location(file_prompt_result.value)
+                # extracted_blocks = extraction.extract_blocklist(file_prompt_result.value)
+                # extracted_app_settings = extraction.extract_app_settings(file_prompt_result.value)
+                # extracted_videos_posted = extraction.extract_posted_videos(file_prompt_result.value)
+                # extracted_views = extraction.extract_watchlist(file_prompt_result.value)
+                # extracted_shares = extraction.extract_shares(file_prompt_result.value)
+                # extracted_likes = extraction.extract_likes(file_prompt_result.value)
+                # extracted_search = extraction.extract_search(file_prompt_result.value)
+                # extracted_adinfo = extraction.extract_ads_info(file_prompt_result.value)
+
+                # extracted_watch_live = extraction.extract_watch_live(file_prompt_result.value)
+                # extracted_comments = extraction.extract_comments(file_prompt_result.value)
+                # extracted_wl_comments = extraction.extract_watch_live_comments(file_prompt_result.value)
+
+                consent_prompt = generate_consent_prompt(extracted_ads_viewed,
+                                                        extracted_posts_viewed,
+                                                        extracted_ads_clicked,
+                                                        extracted_suggested_accs_viewed,
+                                                        extracted_videos_watched,
+                                                        extracted_advertisers_using_info,
+                                                        extracted_no_ads,
+                                                        extracted_off_meta_activity,
+                                                        extracted_followers,
+                                                        extracted_following,
+                                                        extracted_acc_searches,
+                                                        extracted_phrase_searches,
+                                                        extracted_devices,
+                                                        extracted_location,
+                                                        extracted_topics,
+                                                        extracted_logins,
+                                                        extracted_post_comments,
+                                                        extracted_reels_comments,
+                                                        extracted_liked_posts,
+                                                        extracted_acc_setting,
+                                                        extracted_links_in_dms,
+                                                        extracted_saved_posts)
                 
                 consent_prompt_result = yield render_page(platform, consent_prompt)
 
