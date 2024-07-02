@@ -262,23 +262,28 @@ def generate_consent_prompt(*args: pd.DataFrame) -> props.PropsUIPromptConsentFo
     })
 
     tables = [] 
-    outputnames = ["favorite videos, effects, hashtags, and sounds",
-                   "Your fans.",
-                   "Whom you follow",
-                   "Hashtags you used",
-                   "Login History",
-                   "Most recent location",
-                   "Blocked accounts",
-                   "App Settings",
-                   "videos posted",
-                   "views", 
-                   "shares", 
-                   "likes", 
-                   "searches", 
-                   "adinfo", 
-                   "watch live", 
-                   "comments", 
-                   "live comments"]
+    outputnames = ["Your viewed ads",
+                    "Your viewed posts",
+                    "Your clicked ads",
+                    "Your viewed suggested accounts",
+                    "Your watched videos",
+                    "Advertisers using your info",
+                    "Your ad setting",
+                    "Your off-Meta activity",
+                    "Your followers",
+                    "Accounts you follow",
+                    "Your account searches",
+                    "Your phrase searches",
+                    "Your devices",
+                    "Your location",
+                    "Your Instagram topics",
+                    "Your logins",
+                    "Your post comments",
+                    "Your reel comments",
+                    "Your liked posts",
+                    "Your account settings",
+                    "Your links sent via DM",
+                    "Your saved posts"]
     for index, df in enumerate(args):
         print("Test Print ------------")
         print(index)
