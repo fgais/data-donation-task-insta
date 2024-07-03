@@ -2,6 +2,7 @@ import pandas as pd
 import zipfile
 import json
 from bs4 import BeautifulSoup
+from port.helper import read_file_from_zip
 
 def extract_followers_html(zip_file: str) -> pd.DataFrame:
     """
@@ -13,7 +14,9 @@ def extract_followers_html(zip_file: str) -> pd.DataFrame:
         
         file = zipfile.ZipFile(zip_file)
         data = []
-        with file.open('connections/followers_and_following/followers_1.html') as f:
+        path = read_file_from_zip(file, 'connections/followers_and_following/followers_1.html')
+
+        with file.open(path) as f:
             soup = BeautifulSoup(f, 'html.parser')
 
             all_followers = soup.find_all("div", class_="_a706")
@@ -40,7 +43,8 @@ def extract_following_html(zip_file: str) -> pd.DataFrame:
         
         file = zipfile.ZipFile(zip_file)
         data = []
-        with file.open('connections/followers_and_following/following.html') as f:
+        path = read_file_from_zip(file, 'connections/followers_and_following/following.html')
+        with file.open(path) as f:
             soup = BeautifulSoup(f, 'html.parser')
 
             all_following = soup.find_all("div", class_="_a706")
@@ -66,7 +70,9 @@ def extract_saved_posts_html(zip_file: str) -> pd.DataFrame:
         
         file = zipfile.ZipFile(zip_file)
         data = []
-        with file.open('your_instagram_activity/saved/saved_posts.html') as f:
+        path = read_file_from_zip(file, 'your_instagram_activity/saved/saved_posts.html')
+
+        with file.open(path) as f:
             soup = BeautifulSoup(f, 'html.parser')
 
             name_saved = soup.find_all("div", class_="_3-95 _2pim _a6-h _a6-i")
@@ -90,7 +96,8 @@ def extract_your_topics_html(zip_file: str) -> pd.DataFrame:
         
         file = zipfile.ZipFile(zip_file)
         data = []
-        with file.open('preferences/your_topics/your_topics.html') as f:
+        path = read_file_from_zip(file, 'preferences/your_topics/your_topics.html')
+        with file.open(path) as f:
             soup = BeautifulSoup(f, 'html.parser')
             topics = soup.find_all('div', class_="_a6-p")
             for topic in topics:
@@ -112,7 +119,8 @@ def extract_likes_html(zip_file: str) -> pd.DataFrame:
     try:
         file = zipfile.ZipFile(zip_file)
         data = []
-        with file.open('your_instagram_activity/likes/liked_posts.html') as f:
+        path = read_file_from_zip(file, 'your_instagram_activity/likes/liked_posts.html')
+        with file.open(path) as f:
             soup = BeautifulSoup(f, 'html.parser')
             liked_posts = soup.find_all('div', class_="_a6-p")
             liked_user_names = soup.find_all('div', class_="_3-95 _2pim _a6-h _a6-i")
@@ -124,7 +132,8 @@ def extract_likes_html(zip_file: str) -> pd.DataFrame:
 
     try:
         file = zipfile.ZipFile(zip_file)
-        with file.open('your_instagram_activity/likes/liked_comments.html') as f:
+        path = read_file_from_zip(file, 'your_instagram_activity/likes/liked_comments.html')
+        with file.open(path) as f:
             soup = BeautifulSoup(f, 'html.parser')
             liked_comments = soup.find_all('div', class_="_a6-p")
             liked_comment_user_names = soup.find_all('div', class_="_3-95 _2pim _a6-h _a6-i")
@@ -143,7 +152,8 @@ def extract_account_setting_html(zip_file: str) -> pd.DataFrame:
     try:
         file = zipfile.ZipFile(zip_file)
         data = []
-        with file.open('personal_information/personal_information/personal_information.html') as f:
+        path = read_file_from_zip(file, 'personal_information/personal_information/personal_information.html')
+        with file.open(path) as f:
             soup = BeautifulSoup(f, 'html.parser')
             infos = soup.find_all('td', class_="_2pin _a6_q")
             for info in infos:
@@ -161,7 +171,8 @@ def extract_account_location_html(zip_file: str) -> pd.DataFrame:
     try:
         file = zipfile.ZipFile(zip_file)
         data = []
-        with file.open('personal_information/information_about_you/account_based_in.html') as f:
+        path = read_file_from_zip(file, 'personal_information/information_about_you/account_based_in.html')
+        with file.open(path) as f:
             soup = BeautifulSoup(f, 'html.parser')
             infos = soup.find_all('td', class_="_2pin _a6_q")
             location = infos[0].find('div').text
@@ -179,7 +190,8 @@ def extract_posts_viewed_html(zip_file: str) -> pd.DataFrame:
     try:
         file = zipfile.ZipFile(zip_file)
         data = []
-        with file.open('ads_information/ads_and_topics/posts_viewed.html') as f:
+        path = read_file_from_zip(file, 'ads_information/ads_and_topics/posts_viewed.html')
+        with file.open(path) as f:
             soup = BeautifulSoup(f, 'html.parser')
             posts = soup.find_all('div', class_="pam _3-95 _2ph- _a6-g uiBoxWhite noborder")
             for post in posts:
@@ -207,7 +219,8 @@ def extract_ads_viewed_html(zip_file: str) -> pd.DataFrame:
     try:
         file = zipfile.ZipFile(zip_file)
         data = []
-        with file.open('ads_information/ads_and_topics/ads_viewed.html') as f:
+        path = read_file_from_zip(file, 'ads_information/ads_and_topics/ads_viewed.html')
+        with file.open(path) as f:
             soup = BeautifulSoup(f, 'html.parser')
             posts = soup.find_all('div', class_="pam _3-95 _2ph- _a6-g uiBoxWhite noborder")
             for post in posts:
@@ -236,7 +249,8 @@ def extract_ads_clicked_html(zip_file: str) -> pd.DataFrame:
     try:
         file = zipfile.ZipFile(zip_file)
         data = []
-        with file.open('ads_information/ads_and_topics/ads_clicked.html') as f:
+        path = read_file_from_zip(file, 'ads_information/ads_and_topics/ads_clicked.html')
+        with file.open(path) as f:
             soup = BeautifulSoup(f, 'html.parser')
             posts = soup.find_all('div', class_="pam _3-95 _2ph- _a6-g uiBoxWhite noborder")
             for post in posts:
@@ -266,7 +280,8 @@ def extract_videos_watched_html(zip_file: str) -> pd.DataFrame:
     try:
         file = zipfile.ZipFile(zip_file)
         data = []
-        with file.open('ads_information/ads_and_topics/videos_watched.html') as f:
+        path = read_file_from_zip(file, 'ads_information/ads_and_topics/videos_watched.html')
+        with file.open(path) as f:
             soup = BeautifulSoup(f, 'html.parser')
             posts = soup.find_all('div', class_="pam _3-95 _2ph- _a6-g uiBoxWhite noborder")
             for post in posts:
@@ -295,7 +310,8 @@ def extract_suggested_acc_viewed_html(zip_file: str) -> pd.DataFrame:
     try:
         file = zipfile.ZipFile(zip_file)
         data = []
-        with file.open('ads_information/ads_and_topics/suggested_accounts_viewed.html') as f:
+        path = read_file_from_zip(file, 'ads_information/ads_and_topics/suggested_accounts_viewed.html')
+        with file.open(path) as f:
             soup = BeautifulSoup(f, 'html.parser')
             posts = soup.find_all('div', class_="pam _3-95 _2ph- _a6-g uiBoxWhite noborder")
             for post in posts:
@@ -324,7 +340,8 @@ def extract_advertisers_using_info_html(zip_file: str) -> pd.DataFrame:
     try:
         file = zipfile.ZipFile(zip_file)
         data = []
-        with file.open('ads_information/instagram_ads_and_businesses/advertisers_using_your_activity_or_information.html') as f:
+        path = read_file_from_zip(file, 'ads_information/instagram_ads_and_businesses/advertisers_using_your_activity_or_information.html')
+        with file.open(path) as f:
             soup = BeautifulSoup(f, 'html.parser')
             advertisers = soup.find_all('tr', class_="_1isx")
             for adv in advertisers:
@@ -344,7 +361,8 @@ def extract_ads_setting_html(zip_file: str) -> pd.DataFrame:
     try:
         file = zipfile.ZipFile(zip_file)
         data = []
-        with file.open('ads_information/instagram_ads_and_businesses/subscription_for_no_ads.html') as f:
+        path = read_file_from_zip(file, 'ads_information/instagram_ads_and_businesses/subscription_for_no_ads.html')
+        with file.open(path) as f:
             soup = BeautifulSoup(f, 'html.parser')
             setting = soup.find('td', class_="_2piu _a6_r")
             status = setting.text
@@ -363,7 +381,8 @@ def extract_account_searches_html(zip_file: str) -> pd.DataFrame:
     try:
         file = zipfile.ZipFile(zip_file)
         data = []
-        with file.open('logged_information/recent_searches/account_searches.html') as f:
+        path = read_file_from_zip(file, 'logged_information/recent_searches/account_searches.html')
+        with file.open(path) as f:
             soup = BeautifulSoup(f, 'html.parser')
             accounts = soup.find_all('div', class_="_a6-p")
             for subset in accounts:
@@ -387,7 +406,8 @@ def extract_word_or_phrase_searches_html(zip_file: str) -> pd.DataFrame:
     try:
         file = zipfile.ZipFile(zip_file)
         data = []
-        with file.open('logged_information/recent_searches/word_or_phrase_searches.html') as f:
+        path = read_file_from_zip(file, 'logged_information/recent_searches/word_or_phrase_searches.html')
+        with file.open(path) as f:
             soup = BeautifulSoup(f, 'html.parser')
             accounts = soup.find_all('div', class_="_a6-p")
             for subset in accounts:
@@ -412,7 +432,8 @@ def extract_off_meta_activity_html(zip_file: str) -> pd.DataFrame:
     try:
         file = zipfile.ZipFile(zip_file)
         data = []
-        with file.open('apps_and_websites_off_of_instagram/apps_and_websites/your_activity_off_meta_technologies.html') as f:
+        path = read_file_from_zip(file, 'apps_and_websites_off_of_instagram/apps_and_websites/your_activity_off_meta_technologies.html')
+        with file.open(path) as f:
             soup = BeautifulSoup(f, 'html.parser')
             pages = soup.find_all('div', class_="_4-u2 _3-8x _4-u8")
             for page in pages:
@@ -434,7 +455,8 @@ def extract_used_devices_html(zip_file: str) -> pd.DataFrame:
     try:
         file = zipfile.ZipFile(zip_file)
         data = []
-        with file.open('personal_information/device_information/devices.html') as f:
+        path = read_file_from_zip(file, 'personal_information/device_information/devices.html')
+        with file.open(path) as f:
             soup = BeautifulSoup(f, 'html.parser')
             devices = soup.find_all('div', class_="_a6-p")
             for device in devices:
@@ -457,7 +479,8 @@ def extract_login_activity_html(zip_file: str) -> pd.DataFrame:
     try:
         file = zipfile.ZipFile(zip_file)
         data = []
-        with file.open('security_and_login_information/login_and_account_creation/login_activity.html') as f:
+        path = read_file_from_zip(file, 'security_and_login_information/login_and_account_creation/login_activity.html')
+        with file.open(path) as f:
             soup = BeautifulSoup(f, 'html.parser')
             logins = soup.find_all('div', class_="_a6-p")
             for login in logins:
@@ -479,8 +502,10 @@ def extract_post_comments_html(zip_file: str) -> pd.DataFrame:
     '''    
     df = pd.DataFrame()
     try:
+        file = zipfile.ZipFile(zip_file)
         data = []
-        with file.open('your_instagram_activity/comments/post_comments_1.html') as f:
+        path = read_file_from_zip(file, 'your_instagram_activity/comments/post_comments_1.html')
+        with file.open(path) as f:
             soup = BeautifulSoup(f, 'html.parser')
             comments = soup.find_all('div', class_="_a6-p")
             for comment in comments:
@@ -512,8 +537,10 @@ def extract_reel_comments_html(zip_file: str) -> pd.DataFrame:
     '''    
     df = pd.DataFrame()
     try:
+        file = zipfile.ZipFile(zip_file)
         data = []
-        with file.open('your_instagram_activity/comments/reels_comments.html') as f:
+        path = read_file_from_zip(file, 'your_instagram_activity/comments/reels_comments.html')
+        with file.open(path) as f:
             soup = BeautifulSoup(f, 'html.parser')
             comments = soup.find_all('div', class_="_a6-p")
             for comment in comments:
@@ -546,6 +573,8 @@ def extract_links_shared_in_dms_html(zip_file: str) -> pd.DataFrame:
     try:
         file = zipfile.ZipFile(zip_file)
         data = []
+        path = read_file_from_zip(file, 'your_instagram_activity/messages/inbox/')
+        
         folders = file.namelist()
         subfolders = [file for file in folders if 'your_instagram_activity/messages/inbox/' in file]
         message_files = [file for file in subfolders if '.html' in file]
@@ -553,7 +582,7 @@ def extract_links_shared_in_dms_html(zip_file: str) -> pd.DataFrame:
             with file.open(chat) as f:
                 soup = BeautifulSoup(f, 'html.parser')
                 messages = soup.find_all('div', class_="pam _3-95 _2ph- _a6-g uiBoxWhite noborder")
-                conv_partner = chat.replace('your_instagram_activity/messages/inbox/', '')
+                conv_partner = chat.replace(path, '')
                 conv_partner = conv_partner.replace('/message_1.html','')
                 partner_name = soup.find('div', class_="_a705").find('div', class_="_a70e").text
                 for message in messages:
