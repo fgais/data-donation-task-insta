@@ -115,10 +115,10 @@ def extract_likes_html(zip_file: str) -> pd.DataFrame:
     NOTE/TEST: Are liked posts and comments all you can like?
     """
     df = pd.DataFrame()
-
+    data = []
     try:
         file = zipfile.ZipFile(zip_file)
-        data = []
+        
         path = read_file_from_zip(file, 'your_instagram_activity/likes/liked_posts.html')
         with file.open(path) as f:
             soup = BeautifulSoup(f, 'html.parser')
