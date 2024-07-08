@@ -5,7 +5,7 @@ import pandas as pd
 import zipfile
 import json
 
-import port.extraction_insta_html as extraction_insta_html
+import port.extraction_insta_html_lxml as extraction_insta_html
 
 
 def process(session_id: str):
